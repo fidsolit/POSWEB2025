@@ -21,7 +21,6 @@ function ProductTable() {
     selectedToCart.forEach((element) => {
       const isExistingItem = element.id === item.id;
       console.log(isExistingItem);
-      
 
       if (isExistingItem) {
         // If item already exists, update its quantity
@@ -30,14 +29,12 @@ function ProductTable() {
           if (selectedItem.id === element.id) {
             return { ...element, quantity: element.quantity + 1 };
           }
-          console.log("items and element",element, item);
+          console.log("items and element", element, item);
 
           return selectedItem;
         });
         setSelectedToCart(updatedSelected);
       }
-
-       
     });
 
     const newItem = { ...item, quantity: 1 };
