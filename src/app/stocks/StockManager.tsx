@@ -6,8 +6,10 @@ import { ProductProp } from "@/types/productProp";
 import React from "react";
 
 function StockManager() {
-  const apiUrl = "http://localhost:8053/products";
-  const packageData = useFetchData(apiUrl);
+  // const apiUrl = "http://localhost:8053/products";
+  // const packageData = useFetchData(apiUrl);
+  const packageData = useFetchData();
+  console.log("this is the package data", packageData);
 
   const currentDate = new Date();
 
@@ -30,7 +32,7 @@ function StockManager() {
           <StocksTable productItems={nonExpiredProducts} />
         </div>
         <div className="mt-10">
-          <p className="font-bold text-xl">Expired Stock</p>
+          <p className="text-xl font-bold">Expired Stock</p>
           <StocksTable productItems={expiredProducts} />
         </div>
       </div>

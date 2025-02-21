@@ -1,75 +1,45 @@
 "use client";
 import React from "react";
-import useFetchData from "@/hooks/useFetchData"; // Import only in client-side components
+import useFetchData from "@/hooks/useFetchData";
 import CartCard from "../Cart/Cart";
 import { useState } from "react";
 import { ProductProp } from "@/types/productProp";
 import { ExtendedProductProp } from "@/types/cart";
 
 function ProductTable() {
-  const apiUrl = "http://localhost:8053/products";
-  const packageData = useFetchData(apiUrl);
+  const packageData = useFetchData();
+  // console.log("this is the package data from product table", packageData);
 
   const [selectedToCart, setSelectedToCart] = useState<ExtendedProductProp[]>(
     [],
   );
 
-  // add items to cart
   const handleAddToCart = (item: ProductProp) => {
-    // check if an item with the same id exists
+    const existingItemIndex = selectedToCart.findIndex(
+      (cartItem) => cartItem.id === item.id,
+    );
 
-    selectedToCart.forEach((element) => {
-      const isExistingItem = element.id === item.id;
-      console.log(isExistingItem);
-
-      if (isExistingItem) {
-        // If item already exists, update its quantity
-
-        const updatedSelected = selectedToCart.map((selectedItem) => {
-          if (selectedItem.id === element.id) {
-            return { ...element, quantity: element.quantity + 1 };
-          }
-          console.log("items and element", element, item);
-
-          return selectedItem;
-        });
-        setSelectedToCart(updatedSelected);
-      }
-    });
-
-    const newItem = { ...item, quantity: 1 };
-    setSelectedToCart([...selectedToCart, newItem]);
+    if (existingItemIndex !== -1) {
+      // If item exists, update its quantity
+      const updatedCart = selectedToCart.map((cartItem, index) => {
+        if (index === existingItemIndex) {
+          return { ...cartItem, quantity: cartItem.quantity + 1 };
+        }
+        return cartItem;
+      });
+      setSelectedToCart(updatedCart);
+    } else {
+      // If item doesn't exist, add it with quantity 1
+      const newItem = { ...item, quantity: 1 };
+      setSelectedToCart([...selectedToCart, newItem]);
+    }
     console.log(item.name.toUpperCase(), "Added to cart");
   };
 
-  // remove item from cart
-  const handleRemoveItemFromCart = (index: any) => {
+  const handleRemoveItemFromCart = (index: number) => {
     const newSelected = selectedToCart.filter((_, i) => i !== index);
-    return setSelectedToCart(newSelected);
+    setSelectedToCart(newSelected);
   };
-
-  // const handleSelectedItem2 = (item: ProductProp) => {
-  //   // Use Array.some() method to check if an item with the same _id exists
-  //   const isExistingItem = selected.some(
-  //     (selectedItem) => selectedItem.id === item.id,
-  //   );
-
-  //   if (isExistingItem) {
-  //     // If item already exists, update its quantity
-  //     const updatedSelected = selected.map((selectedItem) => {
-  //       if (selectedItem.id === item.id) {
-  //         return { ...selectedItem, quantity: selectedItem.quantity + 1 };
-  //       }
-  //       return selectedItem;
-  //     });
-  //     setSelected(updatedSelected);
-  //   } else {
-  //     // If item doesn't exist, add it to selected array with quantity 1
-  //     const newItem = { ...item, quantity: 1 };
-  //     setSelected([...selected, newItem]);
-  //   }
-  //   // console.log(selected); // Optionally log the item
-  // };
 
   return (
     <div className="md:mt-6* md:gap-6* 2xl:mt-7.5* 2xl:gap-7.5* mt-4 grid grid-cols-4 gap-4">
@@ -81,7 +51,6 @@ function ProductTable() {
                 <th className="min-w-[220px] px-4 py-4 font-medium text-black dark:text-white xl:pl-11">
                   Product Name
                 </th>
-
                 <th className="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
                   Quantity
                 </th>
@@ -101,48 +70,48 @@ function ProductTable() {
                 {packageData.map((packageItem, key) => (
                   <tr
                     key={key}
-                    className={`${packageItem.quantityInStock === 0 && " opacity-50"}`}
+                    className={`${packageItem.quantity_in_stock === 0 && " opacity-50"}`}
                   >
                     <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
                       <h5 className="text-lg font-bold capitalize text-black dark:text-white">
                         {packageItem.name}
                       </h5>
                       <p className="text-sm text-success">
-                        ghc{packageItem.sellingPrice}
+                        Php {packageItem.selling_price.toFixed(2)}
                       </p>
                     </td>
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                       <p className="text-black dark:text-white">
-                        {packageItem.quantityInStock}
+                        {packageItem.quantity_in_stock}
                       </p>
                     </td>
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                       <p className="text-black dark:text-white">
-                        {packageItem.categoryId}
+                        {packageItem.category_id}
                       </p>
                     </td>
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                       <p
                         className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${
-                          packageItem.quantityInStock == 0
+                          packageItem.quantity_in_stock == 0
                             ? "bg-danger text-danger"
-                            : packageItem.quantityInStock < 10
+                            : packageItem.quantity_in_stock < 10
                               ? "bg-warning text-warning"
                               : "bg-success text-success"
                         }`}
                       >
-                        {packageItem.quantityInStock == 0
+                        {packageItem.quantity_in_stock == 0
                           ? "Out of Stock"
-                          : packageItem.quantityInStock < 10
+                          : packageItem.quantity_in_stock < 10
                             ? "Few in Stock"
                             : "In Stock"}
                       </p>
                     </td>
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                       <div className={`flex items-center space-x-3.5`}>
-                        {packageItem.quantityInStock !== 0 && (
+                        {packageItem.quantity_in_stock !== 0 && (
                           <button
-                            disabled={packageItem.quantityInStock === 0}
+                            disabled={packageItem.quantity_in_stock === 0}
                             onClick={() => handleAddToCart(packageItem)}
                             className={`group rounded-md border px-3 py-2  hover:bg-primary`}
                           >

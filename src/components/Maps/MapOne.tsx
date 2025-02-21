@@ -41,7 +41,8 @@ const MapOne: React.FC = () => {
     });
 
     return () => {
-      mapOne.destroy();
+      // mapOne.destroy(); temporary disable
+      console.log("MapOne destroyed");
     };
   }, []);
 
