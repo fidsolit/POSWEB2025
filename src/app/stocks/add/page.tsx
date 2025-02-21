@@ -54,7 +54,7 @@ const AddStocksPage = () => {
 
       if (error) throw error;
 
-      router.push("/products"); // Redirect to products page after successful creation
+      router.push("/sales"); // Redirect to products page after successful creation
     } catch (error) {
       console.error("Error adding product:", error);
       alert("Error adding product. Please try again.");
@@ -222,7 +222,7 @@ const AddStocksPage = () => {
                     <button
                       className="flex justify-center rounded border border-stroke px-6 py-2 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
                       type="button"
-                      onClick={() => router.push("/products")}
+                      onClick={() => router.push("/sales")}
                     >
                       Cancel
                     </button>

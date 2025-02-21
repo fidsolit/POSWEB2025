@@ -26,6 +26,29 @@ export interface Database {
           created_at?: string | null;
         };
       };
+      orders: {
+        Row: {
+          id: string;
+          user_id: string;
+          total_amount: number;
+          status: string;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          total_amount?: number | null;
+          status: string;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id: string;
+          total_amount?: number | null;
+          status: string;
+          created_at?: string | null;
+        };
+      };
       products: {
         Row: {
           id: string;

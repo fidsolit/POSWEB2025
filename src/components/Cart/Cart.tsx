@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ExtendedProductProp } from "@/types/cart";
+
 import { supabase } from "@/libs/supabase";
 import { toast } from "react-hot-toast";
 
@@ -50,53 +51,97 @@ const CartCard = ({ cartItems, handleRemoveItemFromCart }: CartCardProps) => {
     try {
       setIsProcessing(true);
 
-      // Get current user
-      //temporary removed 2 21 2025
+      // Get current user session
       // const {
-      //   data: { user },
-      //   error: userError,
-      // } = await supabase.auth.getUser();
+      //   data: { session },
+      //   error: sessionError,
+      // } = await supabase.auth.getSession();
 
-      // if (userError || !user) {
+      // if (sessionError || !session) {
       //   throw new Error("Please login to place an order");
       // }
 
-      // Create order
-      const { data: order, error: orderError } = await supabase
-        .from("orders")
-        .insert({
-          user_id: "sampleID01",
-          total_amount: calculateTotal(),
-          status: "pending",
-        })
-        .select()
-        .single();
+      // const user = session.user;
 
-      if (orderError || !order) {
-        throw new Error("Failed to create order");
+      // Start a try-catch block for the entire transaction
+      try {
+        // Create order
+        const { data: order, error: orderError } = await supabase
+          .from("orders")
+          .insert({
+            user_id: "6345b5a1-650e-413f-9e6f-3d710f4d9a60",
+            total_amount: calculateTotal(),
+            status: "pending",
+          })
+          .select()
+          .single();
+
+        if (orderError) {
+          console.error("Order creation error:", orderError);
+          throw new Error("Failed to create order");
+        }
+
+        if (!order) {
+          throw new Error("No order was created");
+        }
+
+        // Create order items
+        const orderItems = selected.map((item) => ({
+          order_id: order.id,
+          product_id: item.id,
+          quantity: item.quantity,
+          unit_price: item.selling_price,
+          subtotal: item.quantity * item.selling_price,
+        }));
+
+        const { error: itemsError } = await supabase
+          .from("order_items")
+          .insert(orderItems);
+
+        if (itemsError) {
+          console.error("Order items creation error:", itemsError);
+          throw new Error("Failed to create order items");
+        }
+
+        // Update product quantities
+        for (const item of selected) {
+          const { data: product, error: getProductError } = await supabase
+            .from("products")
+            .select("quantity_in_stock")
+            .eq("id", item.id)
+            .single();
+
+          if (getProductError || !product) {
+            console.error("Error getting product:", getProductError);
+            continue;
+          }
+
+          const newQuantity = product.quantity_in_stock - item.quantity;
+          if (newQuantity < 0) {
+            throw new Error(`Insufficient stock for product: ${item.name}`);
+          }
+
+          const { error: updateError } = await supabase
+            .from("products")
+            .update({ quantity_in_stock: newQuantity })
+            .eq("id", item.id);
+
+          if (updateError) {
+            console.error("Product update error:", updateError);
+            throw new Error(`Failed to update stock for product: ${item.name}`);
+          }
+        }
+
+        // If we reach here, everything succeeded
+        toast.success("Order placed successfully!");
+        handleRemoveItemFromCart(-1); // Clear cart
+      } catch (transactionError) {
+        // Log the error and re-throw it to be caught by the outer catch block
+        console.error("Transaction error:", transactionError);
+        throw transactionError;
       }
-
-      // Create order items
-      const orderItems = selected.map((item) => ({
-        order_id: order.id,
-        product_id: item.id,
-        quantity: item.quantity,
-        unit_price: item.selling_price,
-        subtotal: item.quantity * item.selling_price,
-      }));
-
-      const { error: itemsError } = await supabase
-        .from("order_items")
-        .insert(orderItems);
-
-      if (itemsError) {
-        throw new Error("Failed to create order items");
-      }
-
-      toast.success("Order placed successfully!");
-      // Clear cart (you'll need to implement this function)
-      handleRemoveItemFromCart(-1); // Assuming -1 clears all items
     } catch (error) {
+      console.error("Checkout error:", error);
       toast.error(
         error instanceof Error ? error.message : "Failed to place order",
       );
