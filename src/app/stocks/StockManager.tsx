@@ -18,7 +18,7 @@ function StockManager() {
 
   packageData &&
     packageData.forEach((product) => {
-      if (new Date(product.expiryDate) < currentDate) {
+      if (new Date(product.expiry_date) < currentDate) {
         expiredProducts.push(product);
       } else {
         nonExpiredProducts.push(product);
