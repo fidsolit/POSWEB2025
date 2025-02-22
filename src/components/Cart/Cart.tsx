@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import { ExtendedProductProp } from "@/types/cart";
 
@@ -15,6 +16,7 @@ const CartCard = ({ cartItems, handleRemoveItemFromCart }: CartCardProps) => {
 
   useEffect(() => {
     setSelected([...cartItems]);
+    console.log("cartItems bye fede: ", cartItems);
     return () => {
       selected;
     };

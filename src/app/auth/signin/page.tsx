@@ -1,16 +1,37 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 
-export const metadata: Metadata = {
-  title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Signin Page TailAdmin Dashboard Template",
-};
+import { supabase } from "@/libs/supabase";
+
+// export const metadata: Metadata = {
+//   title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
+//   description: "This is Next.js Signin Page TailAdmin Dashboard Template",
+// };
 
 const SignIn: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      // setError(error.message);
+    } else {
+      // Handle successful sign in
+    }
+  };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Sign In" />
@@ -37,8 +58,7 @@ const SignIn: React.FC = () => {
               </Link>
 
               <p className="2xl:px-20">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                suspendisse.
+                FCODES POS IS THE TOP POS IN THE WORLD
               </p>
 
               <span className="mt-15 inline-block">
@@ -170,7 +190,7 @@ const SignIn: React.FC = () => {
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
               <span className="mb-1.5 block font-medium">Start for free</span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign In to TailAdmin
+                Sign in to your account
               </h2>
 
               <form>
