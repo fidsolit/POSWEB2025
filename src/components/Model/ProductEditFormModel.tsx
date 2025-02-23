@@ -1,4 +1,3 @@
-
 "use client";
 
 import axios from "axios";
@@ -8,10 +7,13 @@ import { ProductProp } from "@/types/productProp";
 
 interface ProductEditFormModelProps {
   product?: ProductProp;
-  clearState?: ()=> void
+  clearState?: () => void;
 }
 
-function ProductEditFormModel({ product, clearState }: ProductEditFormModelProps) {
+function ProductEditFormModel({
+  product,
+  clearState,
+}: ProductEditFormModelProps) {
   if (!product) {
     return <div>No product data available</div>;
   }
@@ -20,29 +22,24 @@ function ProductEditFormModel({ product, clearState }: ProductEditFormModelProps
   const [formData, setFormData] = useState<ProductProp>({
     id: product.id,
     name: product.name,
-    costPrice: product.costPrice,
-    sellingPrice: product.sellingPrice,
-    quantityInStock: product.quantityInStock,
-    expiryDate: product.expiryDate,
-    categoryId: product.categoryId,
+    cost_price: product.cost_price,
+    selling_price: product.selling_price,
+    quantity_in_stock: product.quantity_in_stock,
+    expiry_date: product.expiry_date,
+    category_id: product.category_id,
   });
 
-  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }));
-  
-    
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const id = product.id;
-
-
 
     if (id) {
       try {
@@ -56,31 +53,30 @@ function ProductEditFormModel({ product, clearState }: ProductEditFormModelProps
       console.error("Product ID is undefined.");
     }
   };
-// const updateItem = async (id:string, updatedItem:ProductProp) => {
-//   try {
-//     const response = await fetch(
-//       `http://localhost:8053/api/updateProduct/${id}`,
-//       {
-//         method: "PUT",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(updatedItem),
-//       },
-//     );
+  // const updateItem = async (id:string, updatedItem:ProductProp) => {
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:8053/api/updateProduct/${id}`,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(updatedItem),
+  //       },
+  //     );
 
-//     if (!response.ok) {
-//       throw new Error("Failed to update item");
-//     }
+  //     if (!response.ok) {
+  //       throw new Error("Failed to update item");
+  //     }
 
-//     const data = await response.json();
-//     return data; // You can return data if needed
-//   } catch (error) {
-//     console.error("Error updating item:", error);
-//     throw error; // You can handle errors as needed
-//   }
-// };
-
+  //     const data = await response.json();
+  //     return data; // You can return data if needed
+  //   } catch (error) {
+  //     console.error("Error updating item:", error);
+  //     throw error; // You can handle errors as needed
+  //   }
+  // };
 
   const updateItem = async (id: string, updatedItem: any) => {
     try {
@@ -101,7 +97,11 @@ function ProductEditFormModel({ product, clearState }: ProductEditFormModelProps
       <input type="checkbox" id="my_modal_6" className="modal-toggle" />
       <div className="modal" role="dialog">
         <div className="w-132 modal-box  border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark ">
-          <form onSubmit={handleSubmit} method="post" className="model-box w-full flex-1 ">
+          <form
+            onSubmit={handleSubmit}
+            method="post"
+            className="model-box w-full flex-1 "
+          >
             <div className="grid-cols- grid gap-8">
               <div className="col-span-5 xl:col-span-3">
                 <div className="">
@@ -176,7 +176,7 @@ function ProductEditFormModel({ product, clearState }: ProductEditFormModelProps
                         onClick={clearState}
                         htmlFor="my_modal_6"
                         className="btn"
-                        >
+                      >
                         Close
                       </label>
                       <button
