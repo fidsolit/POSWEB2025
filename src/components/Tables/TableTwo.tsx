@@ -9,6 +9,7 @@ const productData: Product[] = [
     price: 296,
     sold: 22,
     profit: 45,
+    cost_Price: 251,
   },
   {
     image: "/images/product/product-02.png",
@@ -17,6 +18,7 @@ const productData: Product[] = [
     price: 546,
     sold: 12,
     profit: 125,
+    cost_Price: 421,
   },
   {
     image: "/images/product/product-03.png",
@@ -25,12 +27,15 @@ const productData: Product[] = [
     price: 443,
     sold: 64,
     profit: 247,
+    cost_Price: 196,
   },
   {
     image: "/images/product/product-04.png",
     name: "HP Probook 450",
     category: "Electronics",
     price: 499,
+    cost_Price: 299,
+
     sold: 72,
     profit: 103,
   },
